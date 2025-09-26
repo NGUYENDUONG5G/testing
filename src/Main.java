@@ -1,42 +1,48 @@
 
 public class Main {
-    public static int calculateBill(int kWh) {
+    public static double calculatePhone(double hour, double distance,boolean intraNet) {
+        double res = 0.0;
+        double discountHour=0.0;
+        double discountDistance=0.0;
+        double price=890;
+        if(hour>=18||hour<8) discountHour=0.5;
+        if(distance>60 ) discountDistance=0.15;
+        if(!intraNet) price=990;
 
-        if (kWh < 0) {
-            throw new IllegalArgumentException("Số kWh không hợp lệ!");
-        }
-        int[] levelElectric = {50, 50, 100, 100, 100};
-        int[] priceInLevel = {1984, 2050, 2380, 2998, 3350};
+        res=distance*price*(1-discountHour)*(1-discountDistance);
 
-        int res = 0;
-        int index = 0;
-        while (kWh > 0 && index < 5) {
-            if (kWh >= levelElectric[index]) {
-                res += levelElectric[index] * priceInLevel[index];
-                kWh -= levelElectric[index];
-                index++;
-            } else {
-                res += kWh * priceInLevel[index];
-                kWh = 0;
-                break;
-            }
-        }
-        if (kWh > 0) {
-            res += kWh * 3460;
-        }
         return res;
 
     }
 
     public static void main(String[] args) {
-        int[] testValues = {-1, 0, 1, 50, 51, 100, 101, 200, 201};
-        for (int i = 0; i < testValues.length; i++) {
-            try {
-                int bill = calculateBill(testValues[i]);
-                System.out.printf("Testcase %d: kWh= %d -> Result= %d%n", i, testValues[i], bill);
-            } catch (IllegalArgumentException e) {
-                System.out.printf("Testcase %d: kWh= %d -> Result= %s%n",i, testValues[i], e.getMessage());
+        Object[][] testCases = {
+                {10.0, 50.0, true, 44500.0},
+                {20.0, 50.0, true, 22250.0},
+                {10.0, 100.0, true, 75650.0},
+                {20.0, 100.0, true, 37825.0},
+                {10.0, 50.0, false, 49500.0},
+                {20.0, 50.0, false, 24750.0},
+                {10.0, 100.0, false, 84150.0},
+                {20.0, 100.0, false, 42075.0},
+                {8.0, 60.0, true, 53400.0},
+                {7.99, 60.0, true, 26700.0},
+                {18.0, 61.0, false, 25696.125}
+        };
+        for (int i = 0; i < testCases.length; i++) {
+            double hour = (double) testCases[i][0];
+            double distance = (double) testCases[i][1];
+            boolean intraNet = (boolean) testCases[i][2];
+            double expected = (double) testCases[i][3];
+
+            double actualOput = calculatePhone(hour, distance, intraNet);
+            String result="PASS";
+            if(actualOput!=expected){
+                result="FAILED";
             }
+
+            System.out.printf("Case %d: hour=%.2f, distance=%.2f, intraNet=%s -> actualOutput=%.3f (expected=%.3f), result= %s%n",
+                    i + 1, hour, distance, intraNet, actualOput, expected,result);
         }
     }
 }
