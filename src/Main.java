@@ -9,7 +9,7 @@ public class Main {
         if (distance < 0) {
             return -1;
         }
-        if (hour < 0 || hour > 24) return -1;
+        if (hour <= 0 || hour > 24) return -1;
         if (hour >= 18 || hour < 8) discountHour = 0.5;
         if (distance > 60) discountDistance = 0.15;
         if (!intraNet) price = 990;
@@ -39,6 +39,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        solve(Tescase.C_2);
+        solve(Tescase.All_Uses);
     }
 }
